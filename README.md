@@ -34,3 +34,13 @@ $ npm run test:e2e
 # test coverage
 $ npm run test:cov
 ```
+ 
+
+ 
+```bash
+# Up docker
+docker compose up -d
+
+# Delete container
+docker compose down
+```
