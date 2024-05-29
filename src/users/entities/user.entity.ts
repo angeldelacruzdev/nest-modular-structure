@@ -16,4 +16,7 @@ export class User extends BaseEntity {
 
     @Column({ nullable: true })
     hashRt: string;
+
+    @Column({ nullable: true })
+    twoFactorAuthenticationSecret?: string;
 }

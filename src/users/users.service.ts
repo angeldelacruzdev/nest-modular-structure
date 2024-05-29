@@ -81,6 +81,12 @@ export class UsersService {
         }
     }
 
+    async setTwoFactorAuthenticationSecret(secret: string, userId: number) {
+        return this.userRepository.update(userId, {
+            twoFactorAuthenticationSecret: secret,
+        });
+    }
+
     private async findValidation(id: number) {
         const find = await this.userRepository.findOneBy({ id: id });
 
