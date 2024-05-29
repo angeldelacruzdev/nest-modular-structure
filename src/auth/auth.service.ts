@@ -1,4 +1,4 @@
-import { Injectable, HttpException, HttpStatus, ForbiddenException } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus, ForbiddenException, NotFoundException } from '@nestjs/common';
 
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
@@ -31,6 +31,9 @@ export class AuthService {
             await this.usersService.updateHash(user.id, hashdRt);
             return tokens;
         } catch (error) {
+            if (error instanceof NotFoundException) {
+                throw new NotFoundException('Contraseña o Email incorrectos.');
+            }
             throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -42,9 +45,13 @@ export class AuthService {
                 ...registrationData,
                 password: hashedPassword,
             });
-            createdUser.password = undefined;
-            createdUser.hashRt = undefined;
-            return createdUser;
+
+            const tokens = await this.getTokens(createdUser.id, createdUser);
+
+            const rtHash = await this.hashPassword(tokens.refresh_token);
+
+            await this.usersService.updateHash(createdUser.id, rtHash);
+            return tokens;
         } catch (error) {
             if (error?.code === PostgresErrorCode.UniqueViolation) {
                 throw new HttpException('User with that email already exists', HttpStatus.BAD_REQUEST);

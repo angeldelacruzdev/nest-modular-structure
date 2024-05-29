@@ -1,7 +1,8 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto, RegisterDto } from './dto';
-import { Public } from '../decorator';
+import { Public, GetCurrentUser, GetCurrentUserId } from '../decorator';
+import { RtGuard } from '../guards';
 
 @Controller({
     path: 'auth',
@@ -19,8 +20,16 @@ export class AuthController {
 
     @Public()
     @Post('register')
+    @HttpCode(HttpStatus.OK)
     async register(@Body() registrationData: RegisterDto) {
-        console.log(registrationData);
         return this.authService.register(registrationData);
+    }
+
+    @Public()
+    @UseGuards(RtGuard)
+    @Post('/refresh')
+    @HttpCode(HttpStatus.OK)
+    async refreshTokens(@GetCurrentUser('refreshToken') refreshToken: string, @GetCurrentUserId() userId: number) {
+        return await this.authService.refreshTokens(userId, refreshToken);
     }
 }

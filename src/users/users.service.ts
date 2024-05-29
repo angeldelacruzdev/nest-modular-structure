@@ -42,14 +42,7 @@ export class UsersService {
     }
 
     async create(user: CreateUserDto): Promise<User> {
-        const find = await this.getByEmail(user.email);
-
-        if (find) {
-            throw new HttpException('User email  exist', HttpStatus.NOT_FOUND);
-        }
-
         try {
-            user.hashRt = 'dsdasddd';
             const create = this.userRepository.create(user);
             return this.userRepository.save(create);
         } catch (err) {
