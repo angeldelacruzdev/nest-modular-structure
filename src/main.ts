@@ -6,6 +6,8 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
 
+    app.setGlobalPrefix('v1');
+
     app.useGlobalPipes(
         new ValidationPipe({
             whitelist: true,
@@ -13,13 +15,13 @@ async function bootstrap() {
     );
 
     const config = new DocumentBuilder()
-    .setTitle('Keppler example')
-    .setDescription('The Keppler API description')
-    .setVersion('1.0')
-    .addTag('keppler')
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+        .setTitle('Keppler example')
+        .setDescription('The Keppler API description')
+        .setVersion('1.0')
+        .addTag('keppler')
+        .build();
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('api', app, document);
 
     await app.listen(process.env.PORT);
 }

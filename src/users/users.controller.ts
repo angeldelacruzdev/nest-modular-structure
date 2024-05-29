@@ -22,14 +22,6 @@ export class UsersController {
     }
 
     @ApiBody({
-        type: CreateUserDto,
-    })
-    @Post()
-    create(@Body() user: CreateUserDto): Promise<UserResponseDto> {
-        return this.userService.create(user);
-    }
-
-    @ApiBody({
         type: UpdateUserDto,
     })
     @Put(':id')

@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto, UpdateUserDto } from './dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -33,7 +33,21 @@ export class UsersService {
         }
     }
 
+    async getByEmail(email: string) {
+        const user = await this.userRepository.findOneBy({ email });
+        if (user) {
+            return user;
+        }
+        throw new NotFoundException('User with this email does not exist');
+    }
+
     async create(user: CreateUserDto): Promise<User> {
+        const find = await this.getByEmail(user.email);
+
+        if (find) {
+            throw new HttpException('User email  exist', HttpStatus.NOT_FOUND);
+        }
+
         try {
             user.hashRt = 'dsdasddd';
             const create = this.userRepository.create(user);
@@ -48,6 +62,17 @@ export class UsersService {
 
         try {
             await this.userRepository.update(id, user);
+            return this.userRepository.findOneBy({ id });
+        } catch (err) {
+            throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    async updateHash(id: number, hashRt: string): Promise<User> {
+        await this.findValidation(id);
+
+        try {
+            await this.userRepository.update(id, { hashRt });
             return this.userRepository.findOneBy({ id });
         } catch (err) {
             throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
