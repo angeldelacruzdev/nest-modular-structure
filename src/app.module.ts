@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { AtGuard } from './guards';
+import { TwoFactorAuthentication } from './two-factor/twoFactorAuthentication.module';
 
 @Module({
     imports: [
@@ -21,6 +22,7 @@ import { AtGuard } from './guards';
                 POSTGRES_DB: Joi.string().required(),
                 PORT: Joi.number(),
             }),
+            isGlobal: true,
         }),
         DatabaseModule,
         ThrottlerModule.forRoot([
@@ -42,6 +44,7 @@ import { AtGuard } from './guards';
         ]),
         UsersModule,
         AuthModule,
+        TwoFactorAuthentication,
     ],
     controllers: [AppController],
     providers: [

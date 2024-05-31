@@ -2,7 +2,7 @@ import { Body, Controller, HttpCode, HttpStatus, Post, UseGuards } from '@nestjs
 import { AuthService } from './auth.service';
 import { LoginDto, RegisterDto } from './dto';
 import { Public, GetCurrentUser, GetCurrentUserId } from '../decorator';
-import { RtGuard } from '../guards';
+import { AtGuard, RtGuard } from '../guards';
 
 @Controller({
     path: 'auth',

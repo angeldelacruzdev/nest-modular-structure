@@ -8,11 +8,11 @@ import { RtStrategiest } from '../strategies/rt.strategies';
 import { AtStrategiest } from '../strategies/at.strategies';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { TwoFactorAuthentication } from '../two-factor/twoFactorAuthentication.module';
 
 @Module({
     controllers: [AuthController],
     imports: [
-        UsersModule,
         PassportModule,
         JwtModule.register({
             secret: jwtConstants.secret,
